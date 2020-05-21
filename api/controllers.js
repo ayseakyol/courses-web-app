@@ -6,6 +6,7 @@ const Joi = require("joi");
 const util = require("util");
 
 const config = require("../config");
+const courses = require("../data/courses.json");
 const DATA_DIR = path.join(__dirname, "/..", config.DATA_DIR, "/courses.json");
 
 const writeFile = util.promisify(fs.writeFile);
@@ -48,24 +49,16 @@ const controllers = {
     if (error) {
       return res.status(400).send(error.details[0].message);
     } else {
-      fs.readFile(DATA_DIR, "utf-8", (err, data) => {
-        if (err) {
-          res.status(404).send(err);
-        } else {
-          let parsedObject = JSON.parse(data);
-          let course = {
-            id: parsedObject.length + 1,
-            name: req.body.name,
-          };
-          parsedObject.push(course);
-          let objToString = JSON.stringify(parsedObject, null, 2); // and "null" and 2 as the second and third arguments of the JSON.stringify function for good formatting
+      const data = fs.readFileSync(DATA_DIR, "utf-8");
+      let parsedObject = JSON.parse(data);
+      const course = {
+        id: parsedObject.length + 1,
+        name: req.body.name,
+      };
 
-          fs.writeFile(DATA_DIR, objToString, (err) => {
-            if (err) res.status(404).send(err);
-            res.send(course); // replace objToString with "course" to display the new course created
-          });
-        }
-      });
+      courses.push(course);
+      //res.json(members);
+      res.redirect("/");
     }
   },
   putFile: (req, res) => {
