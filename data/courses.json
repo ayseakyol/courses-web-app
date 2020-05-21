@@ -4,11 +4,11 @@
     "name": "JS"
   },
   {
-    "id": 2,
-    "name": "CSS"
-  },
-  {
     "id": 3,
     "name": "HTML"
+  },
+  {
+    "id": 4,
+    "name": "react"
   }
 ]
