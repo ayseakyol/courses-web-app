@@ -1,23 +1,7 @@
 [
   {
-    "id": 1,
-    "name": "JS"
-  },
-  {
-    "id": 2,
-    "name": "HTML"
-  },
-  {
-    "id": 3,
-    "name": "react"
-  },
-  {
-    "id": 4,
-    "name": "ret"
-  },
-  {
     "id": 5,
-    "name": "aser"
+    "name": "css"
   },
   {
     "id": 6,
@@ -44,19 +28,11 @@
     "name": "newest"
   },
   {
-    "id": 12,
-    "name": "newest"
-  },
-  {
     "id": 13,
     "name": "estttt"
   },
   {
-    "id": 14,
-    "name": "ghy"
-  },
-  {
-    "id": 15,
-    "name": "hjuy"
+    "id": 12,
+    "name": "qwer"
   }
 ]

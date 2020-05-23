@@ -79,48 +79,37 @@ const controllers = {
     res.redirect("/");
   },
 
-  putCourse: async (req, res) => {
-    const data = fs.readFileSync(DATA_DIR, "utf-8");
-
-    let courses = JSON.parse(data);
-    const course = courses.find((c) => c.id === parseInt(req.params.id));
+  putCourse: (req, res) => {
+    const course = courses.find(
+      (course) => course.id === parseInt(req.body.id)
+    );
 
     if (!course) {
-      res.status(404).send("The course with the given ID does not exist");
+      res.status(404).send("The course with the given Id was not found..");
       return;
     }
-    const { error } = validateCourse(req.body);
-    if (error) {
-      return res.status(400).send(error.details[0].message);
-    }
-    let parsedObject = JSON.parse(data);
+
     course.name = req.body.name;
 
-    courses.push(course);
+    writeToCourses();
 
-    let objToString = JSON.stringify(parsedObject, null, 2); // and "null" and 2 as the second and third arguments of the JSON.stringify function for good formatting
-
-    await writeFile(DATA_DIR, objToString);
-    courses.push(course);
-    res.json(courses); // replace objToString with "course" to display the new course created
+    //res.send(courses);
+    res.redirect("/");
   },
 
   deleteCourse: async (req, res, next) => {
     try {
-      const data = await readFile(DATA_DIR, "utf-8");
-
-      let courses = JSON.parse(data);
-
-      const course = courses.find((c) => c.id === parseInt(req.params.id)); //? should it become "req.body.id"?
-      //I tried like this but it also did not work.
+      const course = courses.find(
+        (course) => course.id == parseInt(req.body.id)
+      );
 
       const index = courses.indexOf(course);
       courses.splice(index, 1);
 
-      let objToString = JSON.stringify(courses, null, 2);
+      writeToCourses();
 
-      await writeFile(DATA_DIR, objToString);
-      res.send(courses);
+      //res.send(courses);
+      res.redirect("/");
     } catch (err) {
       if (err) {
         next(err);
@@ -129,6 +118,7 @@ const controllers = {
     }
   },
 };
+
 function validateCourse(course) {
   const schema = {
     name: Joi.string().min(3).required(),
