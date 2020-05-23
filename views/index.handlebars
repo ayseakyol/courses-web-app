@@ -7,7 +7,7 @@
     <input type="submit" value="Add Course" class="btn btn-primary btn-block">
 </form>
 
-<form action="/api/courses" method="PUT" class="mb-4">
+<form action="/api/courses/put" method="POST" class="mb-4">
     <div class="form-group">
         <label for="id">Course Id</label>
         <input type="number" name="id" class="form-control">
@@ -19,7 +19,7 @@
     <input type="submit" value="Change Course" class="btn btn-primary btn-block">
 </form>
 
-<form action="/api/courses" method="POST" class="mb-4">
+<form action="/api/courses/delete" method="POST" class="mb-4">
     <div class="form-group">
         <label for="id">Course Id</label>
         <input type="number" name="id" class="form-control">

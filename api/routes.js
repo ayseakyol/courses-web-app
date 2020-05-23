@@ -15,9 +15,9 @@ router.get("/courses/:id", controllers.readCourse);
 router.post("/courses", controllers.writeCourse);
 
 // put a file
-router.put("/courses/:id", controllers.putCourse);
+router.post("/courses/put", controllers.putCourse);
 
 // delete a file
-router.delete("/courses/:id", controllers.deleteCourse);
+router.post("/courses/delete", controllers.deleteCourse);
 
 module.exports = router;
