@@ -8,8 +8,6 @@ const util = require("util");
 const config = require("../config");
 const DATA_DIR = path.join(__dirname, "/..", config.DATA_DIR, "/courses.json");
 
-//const idFilter = (req) => (course) => course.id === parseInt(req.params.id);
-
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
 
@@ -50,13 +48,12 @@ const controllers = {
   },
 
   readCourse: async (req, res) => {
-    const data = await readFile(DATA_DIR, "utf-8");
-    let courses = JSON.parse(data);
-    const course = courses.find((c) => c.id === parseInt(req.params.id));
-
     if (!course)
       return res.status(404).send("The course with the given id is not found.");
 
+    const course = courses.find(
+      (course) => course.id == parseInt(req.params.id)
+    );
     res.send(course);
   },
 
@@ -85,14 +82,13 @@ const controllers = {
     );
 
     if (!course) {
-      res.status(404).send("The course with the given Id was not found..");
+      res.status(404).send("The course with the given id is not found.");
       return;
     }
 
     course.name = req.body.name;
 
     writeToCourses();
-
     //res.send(courses);
     res.redirect("/");
   },
