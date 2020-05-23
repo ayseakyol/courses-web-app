@@ -12,12 +12,14 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
+const methodOverride = require("method-override");
 
 const api = require("./api");
 const config = require("./config");
 const courses = require("./data/courses.json");
 
 const app = express();
+app.use(methodOverride("_method"));
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -61,5 +63,3 @@ app.listen(config.PORT, () => {
     `listening at http://localhost:${config.PORT} (${config.MODE} mode)`
   );
 });
-
-//fs.inotify.max_user_watches = 524288;

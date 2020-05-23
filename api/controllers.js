@@ -6,11 +6,27 @@ const Joi = require("joi");
 const util = require("util");
 
 const config = require("../config");
-const courses = require("../data/courses.json");
 const DATA_DIR = path.join(__dirname, "/..", config.DATA_DIR, "/courses.json");
+
+//const idFilter = (req) => (course) => course.id === parseInt(req.params.id);
 
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
+
+const readfile = () => {
+  const objToBeParsed = fs.readFileSync(DATA_DIR, "utf-8");
+
+  const dataParsed = JSON.parse(objToBeParsed);
+
+  return dataParsed;
+};
+
+const courses = readfile();
+
+const writeToCourses = async () => {
+  const writingData = JSON.stringify(courses, null, 2);
+  await writeFile(DATA_DIR, writingData);
+};
 
 const controllers = {
   hello: (req, res) => {
@@ -33,7 +49,7 @@ const controllers = {
     }
   },
 
-  readFile: async (req, res, next) => {
+  readCourse: async (req, res) => {
     const data = await readFile(DATA_DIR, "utf-8");
     let courses = JSON.parse(data);
     const course = courses.find((c) => c.id === parseInt(req.params.id));
@@ -44,25 +60,26 @@ const controllers = {
     res.send(course);
   },
 
-  writeFile: (req, res) => {
+  writeCourse: (req, res) => {
     const { error } = validateCourse(req.body);
-    if (error) {
-      return res.status(400).send(error.details[0].message);
-    } else {
-      const data = fs.readFileSync(DATA_DIR, "utf-8");
-      let parsedObject = JSON.parse(data);
-      const course = {
-        id: parsedObject.length + 1,
-        name: req.body.name,
-      };
 
-      courses.push(course);
-      //res.json(members);
-      res.redirect("/");
+    if (error) {
+      res.status(400).send(error.details[0].message);
+      return;
     }
+    const course = {
+      id: courses.length + 1,
+      name: req.body.name,
+    };
+    courses.push(course);
+
+    writeToCourses(courses);
+
+    //res.send(courses);
+    res.redirect("/");
   },
-  putFile: (req, res) => {
-    //verify if course exists
+
+  putCourse: async (req, res) => {
     const data = fs.readFileSync(DATA_DIR, "utf-8");
 
     let courses = JSON.parse(data);
@@ -83,18 +100,19 @@ const controllers = {
 
     let objToString = JSON.stringify(parsedObject, null, 2); // and "null" and 2 as the second and third arguments of the JSON.stringify function for good formatting
 
-    fs.writeFile(DATA_DIR, objToString, (err) => {
-      if (err) res.status(404).send(err);
-      res.send(course); // replace objToString with "course" to display the new course created
-    });
+    await writeFile(DATA_DIR, objToString);
+    courses.push(course);
+    res.json(courses); // replace objToString with "course" to display the new course created
   },
 
-  deleteFile: async (req, res, next) => {
+  deleteCourse: async (req, res, next) => {
     try {
       const data = await readFile(DATA_DIR, "utf-8");
 
       let courses = JSON.parse(data);
-      const course = courses.find((c) => c.id === parseInt(req.params.id));
+
+      const course = courses.find((c) => c.id === parseInt(req.params.id)); //? should it become "req.body.id"?
+      //I tried like this but it also did not work.
 
       const index = courses.indexOf(course);
       courses.splice(index, 1);
@@ -102,7 +120,7 @@ const controllers = {
       let objToString = JSON.stringify(courses, null, 2);
 
       await writeFile(DATA_DIR, objToString);
-      res.send(courses); // replace objToString with "course" to display the new course created
+      res.send(courses);
     } catch (err) {
       if (err) {
         next(err);
