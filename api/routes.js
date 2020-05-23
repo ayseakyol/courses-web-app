@@ -9,15 +9,15 @@ router.get("/", controllers.hello);
 router.get("/courses", controllers.getCourses);
 
 // read a file
-router.get("/courses/:id", controllers.readFile);
+router.get("/courses/:id", controllers.readCourse);
 
 // write a file
-router.post("/courses", controllers.writeFile);
+router.post("/courses", controllers.writeCourse);
 
 // put a file
-router.put("/courses/:id", controllers.putFile);
+router.put("/courses/:id", controllers.putCourse);
 
 // delete a file
-router.delete("/courses/:id", controllers.deleteFile);
+router.delete("/courses/:id", controllers.deleteCourse);
 
 module.exports = router;
