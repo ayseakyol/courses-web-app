@@ -57,22 +57,22 @@ const controllers = {
     res.send(course);
   },
 
-  writeCourse: (req, res) => {
+  writeCourse: async (req, res) => {
     const { error } = validateCourse(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-    if (error) {
-      res.status(400).send(error.details[0].message);
-      return;
-    }
-    const course = {
-      id: courses.length + 1,
+    const data = await readFile(DATA_DIR, "utf-8");
+
+    let parsedObject = JSON.parse(data);
+    let course = {
+      id: parsedObject.length + 1,
       name: req.body.name,
     };
-    courses.push(course);
+    parsedObject.push(course);
+    let objToString = JSON.stringify(parsedObject, null, 2);
 
-    writeToCourses(courses);
-
-    //res.send(courses);
+    await writeFile(DATA_DIR, objToString);
+    //res.send(course);
     res.redirect("/");
   },
 
